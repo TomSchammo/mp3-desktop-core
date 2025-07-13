@@ -1,5 +1,5 @@
 # Default target
-.PHONY: all build compile tests test clean
+.PHONY: all build compile tests test test-release benchmarks bench clean
 
 # Default target builds the project
 all: build
@@ -23,6 +23,26 @@ tests:
 test: tests
 	@cd build && ctest --output-on-failure
 
+# Run tests in Release mode (for performance verification)
+test-release:
+	@echo "Building and running tests in Release mode..."
+	@mkdir -p build
+	@cd build && cmake -DCMAKE_BUILD_TYPE=Release ..
+	@cd build && cmake --build . --target tests
+	@cd build && ctest --output-on-failure
+
+# Build benchmarks
+benchmarks:
+	@echo "Building benchmarks in Release mode..."
+	@mkdir -p build
+	@cd build && cmake -DCMAKE_BUILD_TYPE=Release ..
+	@cd build && cmake --build . --target benchmarks
+
+# Run benchmarks
+bench: benchmarks
+	@echo "Running benchmarks (Release build)..."
+	@cd build && ./MyProject_benchmarks
+
 # Clean build directory
 clean:
 	@rm -rf build
@@ -33,6 +53,9 @@ help:
 	@echo "Available targets:"
 	@echo "  build/compile - Build the main project (default)"
 	@echo "  tests         - Build the test executable"
-	@echo "  test          - Build and run tests"
+	@echo "  test          - Build and run tests (Debug mode)"
+	@echo "  test-release  - Build and run tests (Release mode)"
+	@echo "  benchmarks    - Build the benchmark executable (Release mode)"
+	@echo "  bench         - Build and run benchmarks (Release mode)"
 	@echo "  clean         - Remove build directory"
 	@echo "  help          - Show this help message"
