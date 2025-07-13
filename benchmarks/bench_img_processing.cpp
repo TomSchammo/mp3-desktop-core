@@ -212,6 +212,63 @@ BENCHMARK_F(BenchmarkFixture, CachePerformance_Sequential)(benchmark::State &sta
   state.SetItemsProcessed(state.iterations() * 3 * 256 * 256 * 3);
 }
 
+// Forward implementation benchmarks
+// BENCHMARK_F(BenchmarkFixture, SmallImage_2x_Downscale_Forward)(benchmark::State &state) {
+//   for (auto _ : state) {
+//     downscale_area_average_forward(small_image.data(), 64, 64, small_output.data(), 32, 32, 3);
+//   }
+//   state.SetItemsProcessed(state.iterations() * 64 * 64 * 3);
+//   state.SetBytesProcessed(state.iterations() * 64 * 64 * 3 * sizeof(uint8_t));
+// }
+//
+// BENCHMARK_F(BenchmarkFixture, MediumImage_2x_Downscale_Forward)(benchmark::State &state) {
+//   for (auto _ : state) {
+//     downscale_area_average_forward(medium_image.data(), 256, 256, medium_output.data(), 128, 128,
+//     3);
+//   }
+//   state.SetItemsProcessed(state.iterations() * 256 * 256 * 3);
+//   state.SetBytesProcessed(state.iterations() * 256 * 256 * 3 * sizeof(uint8_t));
+// }
+//
+// BENCHMARK_F(BenchmarkFixture, LargeImage_2x_Downscale_Forward)(benchmark::State &state) {
+//   for (auto _ : state) {
+//     downscale_area_average_forward(large_image.data(), 1024, 1024, large_output.data(), 512, 512,
+//     3);
+//   }
+//   state.SetItemsProcessed(state.iterations() * 1024 * 1024 * 3);
+//   state.SetBytesProcessed(state.iterations() * 1024 * 1024 * 3 * sizeof(uint8_t));
+// }
+//
+// BENCHMARK_F(BenchmarkFixture, XLargeImage_2x_Downscale_Forward)(benchmark::State &state) {
+//   for (auto _ : state) {
+//     downscale_area_average_forward(xlarge_image.data(), 2048, 2048, xlarge_output.data(), 1024,
+//     1024, 3);
+//   }
+//   state.SetItemsProcessed(state.iterations() * 2048 * 2048 * 3);
+//   state.SetBytesProcessed(state.iterations() * 2048 * 2048 * 3 * sizeof(uint8_t));
+// }
+//
+// BENCHMARK_F(BenchmarkFixture, MediumImage_4x_Downscale_Forward)(benchmark::State &state) {
+//   std::vector<uint8_t> output(64 * 64 * 3);
+//   for (auto _ : state) {
+//     downscale_area_average_forward(medium_image.data(), 256, 256, output.data(), 64, 64, 3);
+//   }
+//   state.SetItemsProcessed(state.iterations() * 256 * 256 * 3);
+// }
+//
+// BENCHMARK_F(BenchmarkFixture, MediumImage_SingleChannel_Forward)(benchmark::State &state) {
+//   std::vector<uint8_t> src_1ch(256 * 256 * 1);
+//   std::vector<uint8_t> dst_1ch(128 * 128 * 1);
+//
+//   // Fill with test data
+//   std::iota(src_1ch.begin(), src_1ch.end(), 0);
+//
+//   for (auto _ : state) {
+//     downscale_area_average_forward(src_1ch.data(), 256, 256, dst_1ch.data(), 128, 128, 1);
+//   }
+//   state.SetItemsProcessed(state.iterations() * 256 * 256 * 1);
+// }
+
 // Function to set thread affinity and priority on new thread
 void set_thread_affinity_and_priority() {
 #ifdef __APPLE__
