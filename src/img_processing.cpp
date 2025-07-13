@@ -60,30 +60,30 @@ void downscale_area_average_forward(uint8_t *src, uint32_t src_width, uint32_t s
   std::vector<uint32_t> tmp_dst;
   tmp_dst.resize(dst_width * dst_height * channels);
 
-  for (uint32_t y = 0; y < src_height; y++) {
-    const auto dst_y = static_cast<uint32_t>(y / y_scale);
+  for (size_t idx = 0; idx < src_height * src_width; idx++) {
+    const auto y = idx / src_width;
+    const auto x = idx % src_height;
 
-    for (uint32_t x = 0; x < src_width; x++) {
-      const auto dst_x = static_cast<uint32_t>(x / x_scale);
+    const auto dst_x = static_cast<size_t>(x / x_scale);
+    const auto dst_y = static_cast<size_t>(y / y_scale);
 
-      counts[dst_y * dst_width + dst_x] += 1;
+    counts[dst_y * dst_width + dst_x] += 1;
 
-      for (int32_t c = 0; c < channels; c++) {
-        tmp_dst[(dst_y * dst_width + dst_x) * channels + c] +=
-            src[(y * src_width + x) * channels + c];
-      }
+    for (int32_t c = 0; c < channels; c++) {
+      tmp_dst[(dst_y * dst_width + dst_x) * channels + c] +=
+          src[(y * src_width + x) * channels + c];
     }
   }
 
-  for (uint32_t y = 0; y < dst_height; y++) {
-    for (uint32_t x = 0; x < dst_width; x++) {
+  for (size_t idx_pixel = 0; idx_pixel < dst_height * dst_width; idx_pixel++) {
+    const auto y = idx_pixel / dst_width;
+    const auto x = idx_pixel % dst_height;
 
-      for (int32_t c = 0; c < channels; c++) {
-        size_t idx = y * dst_width + x;
-        if (counts[idx] != 0)
-          dst[(y * dst_width + x) * channels + c] =
-              tmp_dst[(y * dst_width + x) * channels + c] / counts[idx];
-      }
+    size_t idx = y * dst_width + x;
+    for (int32_t c = 0; c < channels; c++) {
+      if (counts[idx] != 0)
+        dst[(y * dst_width + x) * channels + c] =
+            tmp_dst[(y * dst_width + x) * channels + c] / counts[idx];
     }
   }
 }
