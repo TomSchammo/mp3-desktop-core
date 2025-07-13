@@ -1,0 +1,6 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+SortIncludes: CaseSensitive
+ColumnLimit: 100
+...
