@@ -5,12 +5,13 @@
 void downscale_area_average(uint8_t *src, uint32_t src_width, uint32_t src_height, uint8_t *dst,
                             uint32_t dst_width, uint32_t dst_height, int32_t channels) {
 
-  // downscaling only
-  assert(src_width > dst_width);
-  assert(src_height > dst_height);
 
   auto x_scale = static_cast<float>(src_width) / dst_width;
   auto y_scale = static_cast<float>(src_height) / dst_height;
+
+  // downscaling only
+  assert(x_scale > 1.0f);
+  assert(y_scale > 1.0f);
 
   for (uint32_t y = 0; y < dst_height; y++) {
     for (uint32_t x = 0; x < dst_width; x++) {
