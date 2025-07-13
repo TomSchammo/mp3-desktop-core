@@ -36,8 +36,7 @@ enable_testing()
 # Manually specify test source files (subset of main sources needed for testing)
 file(GLOB_RECURSE TEST_CPP_SOURCES
     # Add specific source files that need to be tested here
-    # "src/file1.cpp"
-    # "src/file2.cpp"
+    "src/img_processing.cpp"
 )
 
 # Find all test files in test directory
