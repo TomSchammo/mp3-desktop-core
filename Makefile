@@ -38,10 +38,12 @@ benchmarks:
 	@cd build && cmake -DCMAKE_BUILD_TYPE=Release ..
 	@cd build && cmake --build . --target benchmarks
 
-# Run benchmarks
+# Run benchmarks with repetitions and aggregations (recommended for reliable results)
 bench: benchmarks
-	@echo "Running benchmarks (Release build)..."
-	@cd build && ./MyProject_benchmarks
+	@echo "Running benchmarks (Release build, 5 repetitions with aggregations)..."
+	@cd build && sudo ./MyProject_benchmarks --benchmark_repetitions=5 --benchmark_report_aggregates_only=true
+
+
 
 # Clean build directory
 clean:
@@ -56,6 +58,6 @@ help:
 	@echo "  test          - Build and run tests (Debug mode)"
 	@echo "  test-release  - Build and run tests (Release mode)"
 	@echo "  benchmarks    - Build the benchmark executable (Release mode)"
-	@echo "  bench         - Build and run benchmarks (Release mode)"
+	@echo "  bench         - Build and run benchmarks with repetitions (Release mode)"
 	@echo "  clean         - Remove build directory"
 	@echo "  help          - Show this help message"
