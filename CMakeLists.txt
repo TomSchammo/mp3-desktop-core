@@ -21,7 +21,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 # Find all source files in src directory
-file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
+file(GLOB_RECURSE SOURCES "src/*.c")
 
 # Create main executable
 add_executable(${PROJECT_NAME} ${SOURCES} main.cpp)
@@ -75,7 +75,7 @@ enable_testing()
 # Manually specify test source files (subset of main sources needed for testing)
 file(GLOB_RECURSE TEST_CPP_SOURCES
     # Add specific source files that need to be tested here
-    "src/img_processing.cpp"
+    "src/img_processing.c"
 )
 
 # Find all test files in test directory
