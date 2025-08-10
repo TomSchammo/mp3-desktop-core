@@ -3,7 +3,9 @@ project(MyProject)
 
 # Set C++ standard to 23
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_C_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Set default build type to Release if not specified
 if(NOT CMAKE_BUILD_TYPE)
@@ -19,19 +21,34 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 
 # Find all source files in src directory
-file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 
 # Create main executable
 add_executable(${PROJECT_NAME} ${SOURCES} main.cpp)
 
 # Include directories
-target_include_directories(${PROJECT_NAME} PRIVATE include)
-
-target_link_libraries(${PROJECT_NAME}
-  # add dependencies here
+target_include_directories(${PROJECT_NAME} PRIVATE
+    /opt/homebrew/opt/libpng/include/libpng16
+    /opt/homebrew/opt/jpeg-turbo/include
+    include
 )
 
+# Enable ARM NEON support for Apple Silicon and ARM processors
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm64|aarch64|ARM64")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE ARM_NEON_AVAILABLE)
+    if(APPLE)
+        target_compile_options(${PROJECT_NAME} PRIVATE -mcpu=apple-m1)
+    endif()
+endif()
 
+# Link libraries
+find_library(PNG_LIBRARY png16 PATHS /opt/homebrew/opt/libpng/lib NO_DEFAULT_PATH)
+find_library(JPEG_LIBRARY jpeg PATHS /opt/homebrew/opt/jpeg-turbo/lib NO_DEFAULT_PATH)
+
+target_link_libraries(${PROJECT_NAME}
+    ${PNG_LIBRARY}
+    ${JPEG_LIBRARY}
+)
 
 # Fetch and configure Google Test
 include(FetchContent)
@@ -68,10 +85,20 @@ file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 add_executable(${PROJECT_NAME}_tests ${TEST_SOURCES} ${TEST_CPP_SOURCES})
 
 # Link Google Test
-target_link_libraries(${PROJECT_NAME}_tests gtest gtest_main)
+target_link_libraries(${PROJECT_NAME}_tests
+    gtest
+    gtest_main
+    ${PNG_LIBRARY}
+    ${JPEG_LIBRARY}
+)
 
 # Include directories for tests
-target_include_directories(${PROJECT_NAME}_tests PRIVATE include src)
+target_include_directories(${PROJECT_NAME}_tests PRIVATE
+    /opt/homebrew/opt/libpng/include/libpng16
+    /opt/homebrew/opt/jpeg-turbo/include
+    include
+    src
+)
 
 # Automatically discover tests
 gtest_discover_tests(${PROJECT_NAME}_tests)
@@ -83,10 +110,19 @@ file(GLOB_RECURSE BENCHMARK_SOURCES "benchmarks/*.cpp")
 add_executable(${PROJECT_NAME}_benchmarks ${BENCHMARK_SOURCES} ${TEST_CPP_SOURCES})
 
 # Link Google Benchmark
-target_link_libraries(${PROJECT_NAME}_benchmarks benchmark::benchmark)
+target_link_libraries(${PROJECT_NAME}_benchmarks
+    benchmark::benchmark
+    ${PNG_LIBRARY}
+    ${JPEG_LIBRARY}
+)
 
 # Include directories for benchmarks
-target_include_directories(${PROJECT_NAME}_benchmarks PRIVATE include src)
+target_include_directories(${PROJECT_NAME}_benchmarks PRIVATE
+    /opt/homebrew/opt/libpng/include/libpng16
+    /opt/homebrew/opt/jpeg-turbo/include
+    include
+    src
+)
 
 # Custom targets
 add_custom_target(compile DEPENDS ${PROJECT_NAME})
