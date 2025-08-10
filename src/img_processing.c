@@ -74,9 +74,9 @@ void rgb888_to_rgb565_scalar(Image *src, Image *dst) {
     if (b5 > 31)
       b5 = 31;
 
-    uint16_t value = (r5 << 11) | (g6 << 5) | b5;
+    uint16_t value = (uint16_t)((r5 << 11) | (g6 << 5) | b5);
 
-    dst->buffer[i] = value;
+    ((uint16_t *)dst->buffer)[i] = value;
   }
 }
 
