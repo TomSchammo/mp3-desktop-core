@@ -23,8 +23,8 @@ endif()
 # Find all source files in src directory
 file(GLOB_RECURSE SOURCES "src/*.c")
 
-# Create main executable
-add_executable(${PROJECT_NAME} ${SOURCES} main.cpp)
+# Create static library
+add_library(${PROJECT_NAME} STATIC ${SOURCES})
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -64,22 +64,17 @@ FetchContent_MakeAvailable(googletest)
 # Enable testing
 enable_testing()
 
-# Manually specify test source files (subset of main sources needed for testing)
-file(GLOB_RECURSE TEST_CPP_SOURCES
-    # Add specific source files that need to be tested here
-    "src/img_processing.c"
-)
-
 # Find all test files in test directory
 file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 
 # Create test executable
-add_executable(${PROJECT_NAME}_tests ${TEST_SOURCES} ${TEST_CPP_SOURCES})
+add_executable(${PROJECT_NAME}_tests ${TEST_SOURCES})
 
-# Link Google Test
+# Link Google Test and the library
 target_link_libraries(${PROJECT_NAME}_tests
     gtest
     gtest_main
+    ${PROJECT_NAME}
     ${PNG_LIBRARY}
     ${JPEG_LIBRARY}
 )
