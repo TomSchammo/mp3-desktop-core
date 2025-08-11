@@ -1,9 +1,29 @@
 #include "../include/img_processing.h"
 #include <assert.h>
+#include <string.h>
 
 #if __has_include(<arm_neon.h>)
 #include "arm_neon.h"
 #endif
+
+void scale_rectangular_image(Image *src, Image *dst) {
+
+  const float x_scale = ((float)(src->img_width)) / dst->img_width;
+  const float y_scale = ((float)(src->img_height)) / dst->img_height;
+
+  assert(x_scale == y_scale);
+
+  const float scale = x_scale;
+
+  if (scale == 1.0f) {
+    memcpy(dst->buffer, src->buffer, dst->length);
+  } else if (scale > 1.0f) {
+    downscale_area_average(src, dst);
+  } else {
+    // upscaling not implemented
+    assert(0);
+  }
+}
 
 void downscale_area_average(Image *src, Image *dst) {
 
