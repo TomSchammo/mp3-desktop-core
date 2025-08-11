@@ -14,8 +14,9 @@ IO_ERROR get_album_art(const char *file_path, uint8_t *rgb565_buffer) {
 
   uint8_t buffer[ID3_TAG_HEADER_SIZE];
 
-  if (fread(buffer, ID3_TAG_HEADER_SIZE, 1, f) != 0) {
+  if (fread(buffer, ID3_TAG_HEADER_SIZE, 1, f) == 0) {
     fprintf(stderr, "Could not read tag header!\n");
+    fclose(f);
     return COULD_NOT_READ_HEADER;
   }
 
@@ -68,7 +69,7 @@ IO_ERROR get_album_art(const char *file_path, uint8_t *rgb565_buffer) {
         return COULD_NOT_ALLOC_APIC;
       }
 
-      if (fread(frame_buffer, biggest_apic_size, 1, 0) != 1) {
+      if (fread(frame_buffer, biggest_apic_size, 1, f) == 0) {
         fprintf(stderr, "Error: failed reading APIC frame body\n");
         free(frame_buffer);
         fclose(f);
