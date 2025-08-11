@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(MyProject)
+project(MP3Core)
 
 # Set C++ standard to 23
 set(CMAKE_CXX_STANDARD 23)
