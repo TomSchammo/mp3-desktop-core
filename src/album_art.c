@@ -58,7 +58,7 @@ IO_ERROR get_album_art(const char *file_path, uint8_t *rgb565_buffer) {
     }
 
     if (biggest_apic_size > 0) {
-      if (fseek(f, biggest_apic_pos, 0) != 0) {
+      if (fseek(f, biggest_apic_pos + ID3_FRAME_HEADER_SIZE, 0) != 0) {
         fprintf(stderr, "Could not seek to APIC frame!\n");
         fclose(f);
         return COULD_NOT_SEEK_TO_APIC;
