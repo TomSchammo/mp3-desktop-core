@@ -7,6 +7,11 @@
 IO_ERROR get_album_art(const char *file_path, uint8_t *rgb565_buffer) {
   FILE *f = fopen(file_path, "rb");
 
+  if (f == NULL) {
+    fprintf(stderr, "Could not open file %s!\n", file_path);
+    return COULD_NOT_OPEN_FILE;
+  }
+
   uint8_t buffer[ID3_TAG_HEADER_SIZE];
 
   if (fread(buffer, ID3_TAG_HEADER_SIZE, 1, f) != 0) {
