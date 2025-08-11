@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-Image *get_image_data(uint8_t *frame_buffer, uint32_t frame_size) {
+bool get_image_data(uint8_t *frame_buffer, uint32_t frame_size, uint8_t *rgb565_buffer) {
   uint8_t text_encoding = frame_buffer[0];
   uint32_t offset = 1;
 
@@ -64,24 +64,24 @@ Image *get_image_data(uint8_t *frame_buffer, uint32_t frame_size) {
   if (image_type == LINK) {
     printf("image data is a link, fetching data...\n");
     printf("To be implemented!\n");
-    return nullptr;
+    return false;
 
   } else if (image_type == JPEG) {
 
     if (!convert_jpeg_to_rgb888(image_buffer, image_data_size, &rgb888_image)) {
       // TODO error handling
-      return nullptr;
+      return false;
     }
 
   } else if (image_type == PNG) {
     if (!convert_png_to_rgb888(image_buffer, image_data_size, &rgb888_image)) {
       // TODO error handling
-      return nullptr;
+      return false;
     }
 
   } else {
     printf("MIME Type: '%s' is not supported!\n", mime_type);
-    return nullptr;
+    return false;
   }
 
   if (rgb888_image.length != 0) {
@@ -94,24 +94,21 @@ Image *get_image_data(uint8_t *frame_buffer, uint32_t frame_size) {
 
     free(rgb888_image.buffer);
 
-    Image *rgb565_image = malloc(sizeof(Image));
-
-    rgb565_image->img_height = 200;
-    rgb565_image->img_width = 200;
-    rgb565_image->length = 200 * 200 * 2;
-
-    uint8_t *rgb585_buffer = malloc(rgb565_image->length);
-
-    rgb565_image->buffer = rgb585_buffer;
+    Image rgb565_image = {
+        .img_height = 200,
+        .img_width = 200,
+        .length = 200 * 200 * 2,
+        .buffer = rgb565_buffer,
+    };
 
 #if __has_include(<arm_neon.h>)
-    rgb888_to_rgb565_neon(&rgb888_downscaled, rgb565_image);
+    rgb888_to_rgb565_neon(&rgb888_downscaled, &rgb565_image);
 #else
-    rgb888_to_rgb565_scalar(&rgb888_downscaled, rgb585_image);
+    rgb888_to_rgb565_scalar(&rgb888_downscaled, &rgb585_image);
 #endif
 
-    return rgb565_image;
+    return true;
   }
 
-  return nullptr;
+  return false;
 }

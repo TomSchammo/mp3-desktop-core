@@ -1,4 +1,3 @@
-
 #ifndef ID3_PARSING_H
 #define ID3_PARSING_H
 
@@ -88,6 +87,6 @@ inline bool is_apic(const ID3FrameHeader *frame_header) {
 }
 
 [[nodiscard]]
-Image *get_image_data(uint8_t *frame_buffer, uint32_t frame_size);
+bool get_image_data(uint8_t *frame_buffer, uint32_t frame_size, uint8_t *rgb565_buffer);
 
 #endif // ID3_PARSING_H
