@@ -39,7 +39,10 @@ IO_ERROR get_album_art(const char *file_path, uint8_t *rgb565_buffer) {
         break;
       }
 
-      fread(buffer, ID3_FRAME_HEADER_SIZE, 1, f);
+      if (fread(buffer, ID3_FRAME_HEADER_SIZE, 1, f) == 0) {
+        fprintf(stderr, "Could not read frame header!\n");
+        break;
+      }
 
       ID3FrameHeader *frame_header = (ID3FrameHeader *)buffer;
       uint32_t frame_size = get_frame_size(frame_header, major_version);
