@@ -16,6 +16,7 @@ void rgb888_to_rgb565_scalar(Image *src, Image *dst);
 
 #if __has_include(<arm_neon.h>)
 void rgb888_to_rgb565_neon(Image *src, Image *dst);
+void rgb888_to_rgb565_neon_alt(Image *src, Image *dst);
 #endif
 
 /*
