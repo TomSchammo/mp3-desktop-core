@@ -60,14 +60,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# Fetch and configure Google Benchmark
-FetchContent_Declare(
-    googlebenchmark
-    GIT_REPOSITORY https://github.com/google/benchmark.git
-    GIT_TAG v1.8.3
-)
-set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Disable benchmark testing" FORCE)
-FetchContent_MakeAvailable(googlebenchmark)
 
 # Enable testing
 enable_testing()
@@ -103,28 +95,6 @@ target_include_directories(${PROJECT_NAME}_tests PRIVATE
 # Automatically discover tests
 gtest_discover_tests(${PROJECT_NAME}_tests)
 
-# Benchmark configuration
-file(GLOB_RECURSE BENCHMARK_SOURCES "benchmarks/*.cpp")
-
-# Create benchmark executable
-add_executable(${PROJECT_NAME}_benchmarks ${BENCHMARK_SOURCES} ${TEST_CPP_SOURCES})
-
-# Link Google Benchmark
-target_link_libraries(${PROJECT_NAME}_benchmarks
-    benchmark::benchmark
-    ${PNG_LIBRARY}
-    ${JPEG_LIBRARY}
-)
-
-# Include directories for benchmarks
-target_include_directories(${PROJECT_NAME}_benchmarks PRIVATE
-    /opt/homebrew/opt/libpng/include/libpng16
-    /opt/homebrew/opt/jpeg-turbo/include
-    include
-    src
-)
-
 # Custom targets
 add_custom_target(compile DEPENDS ${PROJECT_NAME})
 add_custom_target(tests DEPENDS ${PROJECT_NAME}_tests)
-add_custom_target(benchmarks DEPENDS ${PROJECT_NAME}_benchmarks)
