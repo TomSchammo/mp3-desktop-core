@@ -11,7 +11,7 @@ typedef struct {
   size_t img_height;
 } Image;
 
-void scale_rectangular_image(Image *src, Image *dst);
+void scale_square_image(Image *src, Image *dst);
 void downscale_area_average(Image *src, Image *dst);
 void rgb888_to_rgb565_scalar(Image *src, Image *dst);
 

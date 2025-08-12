@@ -6,7 +6,7 @@
 #include "arm_neon.h"
 #endif
 
-void scale_rectangular_image(Image *src, Image *dst) {
+void scale_square_image(Image *src, Image *dst) {
 
   const float x_scale = ((float)(src->img_width)) / dst->img_width;
   const float y_scale = ((float)(src->img_height)) / dst->img_height;

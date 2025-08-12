@@ -90,7 +90,7 @@ bool get_image_data(uint8_t *frame_buffer, uint32_t frame_size, uint8_t *rgb565_
     uint8_t *downscaled_buffer = malloc(rgb888_downscaled.length);
     rgb888_downscaled.buffer = downscaled_buffer;
 
-    scale_rectangular_image(&rgb888_image, &rgb888_downscaled);
+    scale_square_image(&rgb888_image, &rgb888_downscaled);
 
     free(rgb888_image.buffer);
 
