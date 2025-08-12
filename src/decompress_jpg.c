@@ -17,12 +17,14 @@ bool convert_jpeg_to_rgb888(const uint8_t *image_buffer, uint32_t size, Image *r
   struct jpeg_error_mgr err;
 
   info.err = jpeg_std_error(&err);
-  info.out_color_space = JCS_EXT_RGB;
 
   jpeg_create_decompress(&info);
 
   jpeg_mem_src(&info, image_buffer, size);
   jpeg_read_header(&info, true);
+
+  info.out_color_space = JCS_EXT_RGB;
+
   jpeg_start_decompress(&info);
 
   assert(info.output_components == 3);
