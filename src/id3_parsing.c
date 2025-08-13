@@ -39,6 +39,9 @@ bool get_image_data(uint8_t *frame_buffer, uint32_t frame_size, uint8_t *rgb565_
   else if (strcmp(mime_type, "-->") == 0)
     image_type = LINK;
 
+  regfree(&regex_jpg);
+  regfree(&regex_png);
+
   // skip mime type
   while (offset < frame_size && frame_buffer[offset] != 0) {
     offset++;
