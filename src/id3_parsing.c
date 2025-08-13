@@ -2,6 +2,7 @@
 #include "../include/decompress_jpg.h"
 #include "../include/decompress_png.h"
 #include <regex.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,12 +13,28 @@ bool get_image_data(uint8_t *frame_buffer, uint32_t frame_size, uint8_t *rgb565_
   ImageType image_type = OTHER;
   const char *mime_type = (const char *)(&frame_buffer[offset]);
 
-  if (strcmp(mime_type, "image/jpeg") == 0 || strcmp(mime_type, "jpg") == 0 ||
-      strcmp(mime_type, "jpeg") == 0 || strcmp(mime_type, "image/jpg") == 0 ||
-      strcmp(mime_type, "image/JPG") == 0 || strcmp(mime_type, "image/JPEG") == 0)
-    image_type = JPEG;
+  regex_t regex_jpg;
+  int regr_jpg = regcomp(&regex_jpg, "(image\/)?((jpe?g)|(JPE?G))", 0);
 
-  else if (strcmp(mime_type, "image/png") == 0 || strcmp(mime_type, "png") == 0)
+  regex_t regex_png;
+  int regr_png = regcomp(&regex_jpg, "(image\/)?((png)|(PNG))", 0);
+
+  if (regr_jpg) {
+    fprintf(stderr, "Could not compile JPEG regex\n");
+    return false;
+  }
+
+  if (regr_png) {
+    fprintf(stderr, "Could not compile PNG regex\n");
+    return false;
+  }
+
+  regr_jpg = regexec(&regex_jpg, mime_type, NULL, NULL, 0);
+  regr_png = regexec(&regex_png, mime_type, NULL, NULL, 0);
+
+  if (!regr_jpg)
+    image_type = JPEG;
+  else if (!regr_png)
     image_type = PNG;
   else if (strcmp(mime_type, "-->") == 0)
     image_type = LINK;
