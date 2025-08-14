@@ -29,8 +29,8 @@ bool get_image_data(uint8_t *frame_buffer, uint32_t frame_size, uint8_t *rgb565_
     return false;
   }
 
-  regr_jpg = regexec(&regex_jpg, mime_type, NULL, NULL, 0);
-  regr_png = regexec(&regex_png, mime_type, NULL, NULL, 0);
+  regr_jpg = regexec(&regex_jpg, mime_type, 0, NULL, 0);
+  regr_png = regexec(&regex_png, mime_type, 0, NULL, 0);
 
   if (!regr_jpg)
     image_type = JPEG;
