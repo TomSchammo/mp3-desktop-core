@@ -106,7 +106,9 @@ bool get_image_data(uint8_t *frame_buffer, uint32_t frame_size, uint8_t *rgb565_
 
   if (rgb888_image.length != 0) {
 
-    Image rgb888_downscaled = {.img_height = 200, .img_width = 200, .length = 200 * 200 * 3};
+    Image rgb888_downscaled = {.img_height = TARGET_IMG_HEIGHT,
+                               .img_width = TARGET_IMG_WIDTH,
+                               .length = RGB888_BUFFER_SIZE};
     uint8_t *downscaled_buffer = malloc(rgb888_downscaled.length);
     rgb888_downscaled.buffer = downscaled_buffer;
 
@@ -115,9 +117,9 @@ bool get_image_data(uint8_t *frame_buffer, uint32_t frame_size, uint8_t *rgb565_
     free(rgb888_image.buffer);
 
     Image rgb565_image = {
-        .img_height = 200,
-        .img_width = 200,
-        .length = 200 * 200 * 2,
+        .img_height = TARGET_IMG_HEIGHT,
+        .img_width = TARGET_IMG_WIDTH,
+        .length = RGB565_BUFFER_SIZE,
         .buffer = rgb565_buffer,
     };
 

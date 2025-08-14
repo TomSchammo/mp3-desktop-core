@@ -110,10 +110,10 @@ void rgb888_to_rgb565_neon(Image *src, Image *dst) {
   const uint16x8_t v_63 = vdupq_n_u16(63);
 
   // expecting 200x200 image
-  assert(src->img_width == 200);
-  assert(src->img_height == 200);
-  assert(dst->img_width == 200);
-  assert(dst->img_height == 200);
+  assert(src->img_width == TARGET_IMG_WIDTH);
+  assert(src->img_height == TARGET_IMG_HEIGHT);
+  assert(dst->img_width == TARGET_IMG_WIDTH);
+  assert(dst->img_height == TARGET_IMG_HEIGHT);
 
   uint8x8x3_t v_rgb888;
   uint16x8_t v_rgb565;
@@ -156,10 +156,10 @@ void rgb888_to_rgb565_neon_alt(Image *src, Image *dst) {
   const uint16x8_t v_63 = vdupq_n_u16(63);
 
   // expecting 200x200 image
-  assert(src->img_width == 200);
-  assert(src->img_height == 200);
-  assert(dst->img_width == 200);
-  assert(dst->img_height == 200);
+  assert(src->img_width == TARGET_IMG_WIDTH);
+  assert(src->img_height == TARGET_IMG_HEIGHT);
+  assert(dst->img_width == TARGET_IMG_WIDTH);
+  assert(dst->img_height == TARGET_IMG_HEIGHT);
 
   uint8x16x3_t v_rgb888;
   uint16x8_t v_rgb565_high;
