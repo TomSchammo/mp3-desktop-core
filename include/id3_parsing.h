@@ -50,25 +50,25 @@ _Static_assert((ID3_TAG_HEADER_SIZE == ID3_FRAME_HEADER_SIZE),
                "ID3 Tag and Frame headers are expected to have the same size!");
 
 [[nodiscard]]
-inline uint32_t convert_syncsafe_size(const uint8_t *size) {
+static inline uint32_t convert_syncsafe_size(const uint8_t *size) {
   return ((size[0] & 0x7F) << 21) | ((size[1] & 0x7F) << 14) | ((size[2] & 0x7F) << 7) |
          (size[3] & 0x7F);
 }
 
 [[nodiscard]]
-inline uint32_t convert_be32_size(const uint8_t *size) {
+static inline uint32_t convert_be32_size(const uint8_t *size) {
   return ((unsigned long)size[0] << 24) | ((unsigned long)size[1] << 16) |
          ((unsigned long)size[2] << 8) | (unsigned long)size[3];
 }
 
 [[nodiscard]]
-inline uint32_t get_frame_size(const ID3FrameHeader *frame_header, uint8_t major_version) {
+static inline uint32_t get_frame_size(const ID3FrameHeader *frame_header, uint8_t major_version) {
   return major_version == 4 ? convert_syncsafe_size(frame_header->size)
                             : convert_be32_size(frame_header->size);
 }
 
 [[nodiscard]]
-inline bool is_id3_header(const ID3TagHeader *tag_header) {
+static inline bool is_id3_header(const ID3TagHeader *tag_header) {
   if (tag_header->identifier[0] == 'I' && tag_header->identifier[1] == 'D' &&
       tag_header->identifier[2] == '3') {
     return true;
@@ -80,7 +80,7 @@ inline bool is_id3_header(const ID3TagHeader *tag_header) {
 }
 
 [[nodiscard]]
-inline bool is_apic(const ID3FrameHeader *frame_header) {
+static inline bool is_apic(const ID3FrameHeader *frame_header) {
 
   return (frame_header->id[0] == 'A' && frame_header->id[1] == 'P' && frame_header->id[2] == 'I' &&
           frame_header->id[3] == 'C');
