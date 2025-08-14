@@ -126,7 +126,7 @@ bool get_image_data(uint8_t *frame_buffer, uint32_t frame_size, uint8_t *rgb565_
 #if __has_include(<arm_neon.h>)
     rgb888_to_rgb565_neon(&rgb888_downscaled, &rgb565_image);
 #else
-    rgb888_to_rgb565_scalar(&rgb888_downscaled, &rgb585_image);
+    rgb888_to_rgb565_scalar(&rgb888_downscaled, &rgb565_image);
 #endif
 
     return true;
