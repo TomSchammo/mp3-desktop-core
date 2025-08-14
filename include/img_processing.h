@@ -1,15 +1,7 @@
 #ifndef IMG_PROCESSING_H
 #define IMG_PROCESSING_H
 
-#include <stddef.h>
-#include <stdint.h>
-
-typedef struct {
-  uint8_t *buffer;
-  size_t length;
-  size_t img_width;
-  size_t img_height;
-} Image;
+#include "./image.h"
 
 void scale_square_image(Image *src, Image *dst);
 void downscale_area_average(Image *src, Image *dst);
