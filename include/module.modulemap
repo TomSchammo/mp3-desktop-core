@@ -1,0 +1,9 @@
+module mp3lib {
+    header "album_art.h"
+    header "decompress_jpg.h"
+    header "decompress_png.h"
+    header "id3_parsing.h"
+    header "img_processing.h"
+
+    export *
+}
