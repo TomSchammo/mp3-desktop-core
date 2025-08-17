@@ -104,6 +104,73 @@ void rgb888_to_rgb565_scalar(Image *src, Image *dst) {
 
 void rgb888_to_rgb565_neon(Image *src, Image *dst) {
 
+  const uint8x16_t v_4 = vdupq_n_u8(4);
+  const uint8x16_t v_2 = vdupq_n_u8(2);
+  const uint8x16_t v_255 = vdupq_n_u8(255);
+
+  // expecting 200x200 image
+  assert(src->img_width == TARGET_IMG_WIDTH);
+  assert(src->img_height == TARGET_IMG_HEIGHT);
+  assert(dst->img_width == TARGET_IMG_WIDTH);
+  assert(dst->img_height == TARGET_IMG_HEIGHT);
+
+  uint8x16x3_t v_rgb888;
+  uint16x8_t v_rgb565_high;
+  uint16x8_t v_rgb565_low;
+
+  for (int i = 0; i < src->img_width * src->img_height; i += 16) {
+
+    v_rgb888 = vld3q_u8(src->buffer + (i * 3));
+
+    uint8x16_t v_r = v_rgb888.val[0];
+    uint8x16_t v_g = v_rgb888.val[1];
+    uint8x16_t v_b = v_rgb888.val[2];
+
+    v_r = vaddq_u8(v_r, v_4);
+    v_g = vaddq_u8(v_g, v_2);
+    v_b = vaddq_u8(v_b, v_4);
+
+    // handle overflow
+    uint8x16_t r_mask = vcgtq_u8(v_rgb888.val[0], v_r);
+    uint8x16_t g_mask = vcgtq_u8(v_rgb888.val[1], v_g);
+    uint8x16_t b_mask = vcgtq_u8(v_rgb888.val[2], v_b);
+
+    v_r = vbslq_u8(r_mask, v_255, v_r);
+    v_g = vbslq_u8(g_mask, v_255, v_g);
+    v_b = vbslq_u8(b_mask, v_255, v_b);
+
+    v_r = vshrq_n_u8(v_r, 3);
+    v_g = vshrq_n_u8(v_g, 2);
+    v_b = vshrq_n_u8(v_b, 3);
+
+    uint16x8_t v_r8_high = vmovl_high_u8(v_r);
+    uint16x8_t v_r8_low = vmovl_u8(vget_low_u8(v_r));
+
+    uint16x8_t v_g8_high = vmovl_high_u8(v_g);
+    uint16x8_t v_g8_low = vmovl_u8(vget_low_u8(v_g));
+
+    uint16x8_t v_b8_high = vmovl_high_u8(v_b);
+    uint16x8_t v_b8_low = vmovl_u8(vget_low_u8(v_b));
+
+    v_r8_high = vshlq_n_u16(v_r8_high, 11);
+    v_g8_high = vshlq_n_u16(v_g8_high, 5);
+
+    v_r8_low = vshlq_n_u16(v_r8_low, 11);
+    v_g8_low = vshlq_n_u16(v_g8_low, 5);
+
+    v_rgb565_high = vorrq_u16(v_r8_high, v_g8_high);
+    v_rgb565_high = vorrq_u16(v_rgb565_high, vmovl_high_u8(v_b));
+
+    v_rgb565_low = vorrq_u16(v_r8_low, v_g8_low);
+    v_rgb565_low = vorrq_u16(v_rgb565_low, vmovl_u8(vget_low_u8(v_b)));
+
+    vst1q_u16((uint16_t *)dst->buffer + i, v_rgb565_low);
+    vst1q_u16((uint16_t *)dst->buffer + i + 8, v_rgb565_high);
+  }
+}
+
+void rgb888_to_rgb565_neon_8vals(Image *src, Image *dst) {
+
   const uint16x8_t v_4 = vdupq_n_u16(4);
   const uint16x8_t v_2 = vdupq_n_u16(2);
   const uint16x8_t v_31 = vdupq_n_u16(31);
@@ -148,7 +215,7 @@ void rgb888_to_rgb565_neon(Image *src, Image *dst) {
   }
 }
 
-void rgb888_to_rgb565_neon_alt(Image *src, Image *dst) {
+void rgb888_to_rgb565_neon_16_vals(Image *src, Image *dst) {
 
   const uint16x8_t v_4 = vdupq_n_u16(4);
   const uint16x8_t v_2 = vdupq_n_u16(2);
